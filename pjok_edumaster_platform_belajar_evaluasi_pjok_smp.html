@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PJOK EduMaster - Pembelajaran Jasmani, Olahraga & Kesehatan SMP</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for dynamic analytics dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        accent: {
+                            500: '#0284c7',
+                            600: '#0369a1',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(229, 231, 235, 0.8);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(34, 197, 94, 0.3); }
+            50% { box-shadow: 0 0 25px rgba(34, 197, 94, 0.6); }
+        }
+        .glow-active {
+            animation: pulse-glow 2s infinite;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col text-slate-800 antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <!-- Logo & Brand -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-teal-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+                        <i class="fa-solid fa-running text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-extrabold text-xl tracking-tight text-slate-900">PJOK <span class="text-brand-600">EduMaster</span></span>
+                        <span class="block text-xs text-slate-500 font-medium">Platform Belajar PJOK SMP Kelas 7-9</span>
+                    </div>
+                </div>
+
+                <!-- Main Navigation Tabs -->
+                <nav class="hidden md:flex space-x-1 lg:space-x-2 items-center">
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center space-x-2 text-brand-700 bg-brand-50">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>Dashboard Utama</span>
+                    </button>
+                    <button onclick="switchTab('modul')" id="nav-modul" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all duration-200 flex items-center space-x-2">
+                        <i class="fa-solid fa-book-open"></i>
+                        <span>Modul Belajar</span>
+                    </button>
+                    <button onclick="switchTab('kuis')" id="nav-kuis" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all duration-200 flex items-center space-x-2">
+                        <i class="fa-solid fa-list-check"></i>
+                        <span>Evaluasi & Kuis</span>
+                    </button>
+                    <button onclick="switchTab('kebugaran')" id="nav-kebugaran" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all duration-200 flex items-center space-x-2">
+                        <i class="fa-solid fa-heart-pulse"></i>
+                        <span>Kalkulator BMI & Fisik</span>
+                    </button>
+                </nav>
+
+                <!-- Profile & Level Pill -->
+                <div class="flex items-center space-x-3">
+                    <div class="bg-amber-50 border border-amber-200 rounded-full px-3 py-1 flex items-center space-x-1.5 text-xs font-bold text-amber-700 shadow-sm">
+                        <i class="fa-solid fa-fire text-amber-500"></i>
+                        <span id="header-streak">Streak 3 Hari</span>
+                    </div>
+                    <div class="bg-brand-50 border border-brand-200 rounded-full px-3 py-1 flex items-center space-x-1.5 text-xs font-bold text-brand-700 shadow-sm">
+                        <i class="fa-solid fa-trophy text-amber-500"></i>
+                        <span id="header-xp">1,250 XP</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Bottom Nav -->
+        <div class="md:hidden flex justify-around bg-white border-t border-slate-200 py-2 fixed bottom-0 left-0 right-0 z-50 shadow-lg">
+            <button onclick="switchTab('dashboard')" class="mobile-nav-btn text-center text-xs text-brand-600 font-semibold flex flex-col items-center">
+                <i class="fa-solid fa-chart-line text-lg mb-0.5"></i>
+                <span>Dashboard</span>
+            </button>
+            <button onclick="switchTab('modul')" class="mobile-nav-btn text-center text-xs text-slate-500 font-medium flex flex-col items-center">
+                <i class="fa-solid fa-book-open text-lg mb-0.5"></i>
+                <span>Modul</span>
+            </button>
+            <button onclick="switchTab('kuis')" class="mobile-nav-btn text-center text-xs text-slate-500 font-medium flex flex-col items-center">
+                <i class="fa-solid fa-list-check text-lg mb-0.5"></i>
+                <span>Evaluasi</span>
+            </button>
+            <button onclick="switchTab('kebugaran')" class="mobile-nav-btn text-center text-xs text-slate-500 font-medium flex flex-col items-center">
+                <i class="fa-solid fa-heart-pulse text-lg mb-0.5"></i>
+                <span>Fisik</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-20 md:pb-8">
+
+        <!-- ==================== TAB 1: DASHBOARD UTAMA ==================== -->
+        <section id="tab-dashboard" class="tab-content space-y-6">
+            <!-- Hero Greeting Banner -->
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-emerald-900 to-slate-900 text-white p-6 sm:p-8 shadow-xl">
+                <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div class="space-y-2 max-w-2xl">
+                        <div class="inline-flex items-center space-x-2 bg-brand-500/20 text-brand-300 text-xs font-semibold px-3 py-1 rounded-full border border-brand-500/30">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                            <span>Selamat Datang, Siswa Hebat!</span>
+                        </div>
+                        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Siap Menjadi Juara Jasmani & Kesehatan? ⚽</h1>
+                        <p class="text-slate-300 text-sm sm:text-base">
+                            Tingkatkan kebugaran tubuh dan pemahaman teori olahraga dari Kelas 7 hingga Kelas 9. Selesaikan modul dan uji pemahamanmu di evaluasi interaktif!
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap md:flex-col gap-3 min-w-[200px]">
+                        <button onclick="switchTab('kuis')" class="w-full bg-brand-500 hover:bg-brand-600 text-white px-5 py-3 rounded-xl font-bold transition duration-200 shadow-lg shadow-brand-500/30 flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-play"></i>
+                            <span>Mulai Kuis Sekarang</span>
+                        </button>
+                        <button onclick="switchTab('modul')" class="w-full bg-slate-800/80 hover:bg-slate-800 text-slate-200 border border-slate-700 px-5 py-2.5 rounded-xl font-semibold text-sm transition duration-200 flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-search"></i>
+                            <span>Eksplor Modul PJOK</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Overview Cards Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="glass-card p-4 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl shrink-0">
+                        <i class="fa-solid fa-book text-2xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-slate-500">Modul Selesai</p>
+                        <p class="text-xl font-bold text-slate-900" id="stat-completed-modules">8 / 12</p>
+                        <div class="w-24 bg-slate-100 h-1.5 rounded-full mt-1.5 overflow-hidden">
+                            <div class="bg-emerald-500 h-full rounded-full" style="width: 66%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-4 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl shrink-0">
+                        <i class="fa-solid fa-bullseye text-2xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-slate-500">Rata-rata Skor</p>
+                        <p class="text-xl font-bold text-slate-900" id="stat-avg-score">88.5%</p>
+                        <span class="text-[10px] text-emerald-600 font-semibold"><i class="fa-solid fa-arrow-up"></i> +4% minggu ini</span>
+                    </div>
+                </div>
+
+                <div class="glass-card p-4 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl shrink-0">
+                        <i class="fa-solid fa-medal text-2xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-slate-500">Lencana Diterima</p>
+                        <p class="text-xl font-bold text-slate-900" id="stat-badges-count">6 Lencana</p>
+                        <span class="text-[10px] text-amber-600 font-semibold">Tingkat Master Muda</span>
+                    </div>
+                </div>
+
+                <div class="glass-card p-4 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl shrink-0">
+                        <i class="fa-solid fa-clock text-2xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-slate-500">Waktu Belajar</p>
+                        <p class="text-xl font-bold text-slate-900">4.2 Jam</p>
+                        <span class="text-[10px] text-purple-600 font-semibold">Aktif minggu ini</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Learning Progress Chart -->
+                <div class="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="font-bold text-slate-900">Analisis Kemampuan per Kategori PJOK</h3>
+                            <p class="text-xs text-slate-500">Penguasaan materi berdasarkan kelas dan topik utama</p>
+                        </div>
+                        <span class="text-xs font-semibold bg-slate-100 px-3 py-1 rounded-lg text-slate-600">Update Otomatis</span>
+                    </div>
+                    <div class="h-64 w-full relative">
+                        <canvas id="masteryRadarChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Activity & Grade Breakdown -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-slate-900 mb-1">Kemajuan per Kelas SMP</h3>
+                        <p class="text-xs text-slate-500 mb-4">Progres pengerjaan modul & kuis</p>
+                        
+                        <div class="space-y-4">
+                            <!-- Kelas 7 -->
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold mb-1">
+                                    <span class="text-slate-700"><i class="fa-solid fa-layer-group text-emerald-500 mr-1"></i> Kelas 7 SMP</span>
+                                    <span class="text-emerald-600">85% Selesai</span>
+                                </div>
+                                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                    <div class="bg-emerald-500 h-full rounded-full" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <!-- Kelas 8 -->
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold mb-1">
+                                    <span class="text-slate-700"><i class="fa-solid fa-layer-group text-blue-500 mr-1"></i> Kelas 8 SMP</span>
+                                    <span class="text-blue-600">60% Selesai</span>
+                                </div>
+                                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                    <div class="bg-blue-500 h-full rounded-full" style="width: 60%"></div>
+                                </div>
+                            </div>
+                            <!-- Kelas 9 -->
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold mb-1">
+                                    <span class="text-slate-700"><i class="fa-solid fa-layer-group text-purple-500 mr-1"></i> Kelas 9 SMP</span>
+                                    <span class="text-purple-600">40% Selesai</span>
+                                </div>
+                                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                    <div class="bg-purple-500 h-full rounded-full" style="width: 40%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Motivation Tip Card -->
+                    <div class="p-3.5 bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl border border-teal-100 text-xs text-teal-800 space-y-1">
+                        <div class="font-bold flex items-center space-x-1.5">
+                            <i class="fa-solid fa-lightbulb text-amber-500"></i>
+                            <span>Tips Bugar Hari Ini</span>
+                        </div>
+                        <p class="text-slate-600">Lakukan pusingan pendinginan (stretching) selama 5-10 menit setelah berolahraga untuk mencegah kram dan cedera otot.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Badges Collection Grid -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold text-slate-900">Koleksi Lencana Prestasimu 🏅</h3>
+                        <p class="text-xs text-slate-500">Buka lencana baru dengan menyelesaikan modul dan evaluasi kuis</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3" id="badges-container">
+                    <!-- Dynamic badges rendered by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 2: MODUL BELAJAR PJOK ==================== -->
+        <section id="tab-modul" class="tab-content hidden space-y-6">
+            <!-- Header Filter Bar -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Modul Pembelajaran PJOK</h2>
+                    <p class="text-xs text-slate-500">Materi resmi Kurikulum PJOK untuk SMP Kelas 7, 8, dan 9</p>
+                </div>
+
+                <!-- Filter Controls -->
+                <div class="flex flex-wrap items-center gap-2">
+                    <!-- Filter Grade -->
+                    <select id="filter-grade" onchange="renderModules()" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs font-semibold rounded-xl px-3 py-2 focus:ring-2 focus:ring-brand-500 outline-none">
+                        <option value="all">Semua Kelas (7, 8, 9)</option>
+                        <option value="7">Kelas 7 SMP</option>
+                        <option value="8">Kelas 8 SMP</option>
+                        <option value="9">Kelas 9 SMP</option>
+                    </select>
+
+                    <!-- Filter Category -->
+                    <select id="filter-category" onchange="renderModules()" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs font-semibold rounded-xl px-3 py-2 focus:ring-2 focus:ring-brand-500 outline-none">
+                        <option value="all">Semua Topik Olahraga</option>
+                        <option value="Bola Besar">Permainan Bola Besar</option>
+                        <option value="Bola Kecil">Permainan Bola Kecil</option>
+                        <option value="Atletik">Atletik & Lari</option>
+                        <option value="Bela Diri">Bela Diri (Pencak Silat)</option>
+                        <option value="Kebugaran">Kebugaran Jasmani</option>
+                        <option value="Senam">Senam Lantai & Ritmik</option>
+                        <option value="Kesehatan">Kesehatan & P3K</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Modules Grid Container -->
+            <div id="modules-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Modules will be dynamically injected here -->
+            </div>
+        </section>
+
+        <!-- ==================== TAB 3: EVALUASI & KUIS INTERAKTIF ==================== -->
+        <section id="tab-kuis" class="tab-content hidden space-y-6">
+            
+            <!-- Quiz Selection Hub -->
+            <div id="quiz-selection-hub" class="space-y-6">
+                <div class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-2xl p-6 sm:p-8 shadow-lg relative overflow-hidden">
+                    <div class="max-w-xl space-y-3 relative z-10">
+                        <span class="bg-white/20 px-3 py-1 rounded-full text-xs font-semibold">Mode Evaluasi PJOK</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold">Uji Kemampuan & Pemahaman Olahragamu! 🏆</h2>
+                        <p class="text-emerald-100 text-sm">
+                            Pilih kuis sesuai kelas atau topik yang ingin kamu uji. Dapatkan analisis nilai lengkap dan skor real-time saat menjawab!
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Quiz Card Kelas 7 -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition space-y-4 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="bg-emerald-100 text-emerald-700 font-bold text-xs px-3 py-1 rounded-full">Kelas 7 SMP</span>
+                                <span class="text-xs text-slate-500 font-medium"><i class="fa-regular fa-clock"></i> 10 Menit</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-900">Evaluasi Dasar PJOK Kelas 7</h3>
+                            <p class="text-xs text-slate-600 line-clamp-2">
+                                Menguji teknik dasar sepak bola, voli, jalan cepat, kebugaran jasmani dasar, dan gizi seimbang.
+                            </p>
+                            <div class="text-xs text-slate-500 space-y-1">
+                                <p><i class="fa-solid fa-check-circle text-emerald-500"></i> 10 Soal Pilihan Ganda</p>
+                                <p><i class="fa-solid fa-check-circle text-emerald-500"></i> Pembahasan Instans & Live Score</p>
+                            </div>
+                        </div>
+                        <button onclick="startQuiz('7')" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-2.5 rounded-xl font-bold text-sm transition shadow-sm">
+                            Mulai Kuis Kelas 7
+                        </button>
+                    </div>
+
+                    <!-- Quiz Card Kelas 8 -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition space-y-4 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="bg-blue-100 text-blue-700 font-bold text-xs px-3 py-1 rounded-full">Kelas 8 SMP</span>
+                                <span class="text-xs text-slate-500 font-medium"><i class="fa-regular fa-clock"></i> 12 Menit</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-900">Evaluasi Lanjutan PJOK Kelas 8</h3>
+                            <p class="text-xs text-slate-600 line-clamp-2">
+                                Kombinasi permainan bola, tolak peluru, pencak silat, guling depan/belakang, dan bahaya pergaulan bebas.
+                            </p>
+                            <div class="text-xs text-slate-500 space-y-1">
+                                <p><i class="fa-solid fa-check-circle text-blue-500"></i> 10 Soal Pilihan Ganda</p>
+                                <p><i class="fa-solid fa-check-circle text-blue-500"></i> Pembahasan Instans & Live Score</p>
+                            </div>
+                        </div>
+                        <button onclick="startQuiz('8')" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl font-bold text-sm transition shadow-sm">
+                            Mulai Kuis Kelas 8
+                        </button>
+                    </div>
+
+                    <!-- Quiz Card Kelas 9 -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition space-y-4 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="bg-purple-100 text-purple-700 font-bold text-xs px-3 py-1 rounded-full">Kelas 9 SMP</span>
+                                <span class="text-xs text-slate-500 font-medium"><i class="fa-regular fa-clock"></i> 15 Menit</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-900">Evaluasi Komprehensif Kelas 9</h3>
+                            <p class="text-xs text-slate-600 line-clamp-2">
+                                Taktik & strategi permainan bola, estafet, senam ritmik, renang gaya dada, dan pertolongan pertama (P3K).
+                            </p>
+                            <div class="text-xs text-slate-500 space-y-1">
+                                <p><i class="fa-solid fa-check-circle text-purple-500"></i> 10 Soal Pilihan Ganda</p>
+                                <p><i class="fa-solid fa-check-circle text-purple-500"></i> Pembahasan Instans & Live Score</p>
+                            </div>
+                        </div>
+                        <button onclick="startQuiz('9')" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2.5 rounded-xl font-bold text-sm transition shadow-sm">
+                            Mulai Kuis Kelas 9
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Quiz Screen (Hidden by Default) -->
+            <div id="quiz-runner" class="hidden space-y-6">
+                <!-- Live Quiz Dashboard Header -->
+                <div class="glass-card bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-md">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="flex items-center space-x-3">
+                            <button onclick="quitQuiz()" class="p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">
+                                <i class="fa-solid fa-arrow-left text-lg"></i>
+                            </button>
+                            <div>
+                                <span id="quiz-title-badge" class="bg-brand-100 text-brand-700 text-xs font-bold px-2.5 py-0.5 rounded-full">Evaluasi Kelas 7</span>
+                                <h3 class="text-lg font-bold text-slate-900" id="quiz-runner-title">Evaluasi Pembelajaran PJOK</h3>
+                            </div>
+                        </div>
+
+                        <!-- Live Quiz Metrics -->
+                        <div class="flex items-center space-x-4 self-end sm:self-center">
+                            <!-- Live Score Indicator -->
+                            <div class="text-right">
+                                <p class="text-[10px] text-slate-400 font-semibold uppercase">Skor Sementara</p>
+                                <p class="text-xl font-black text-brand-600" id="live-quiz-score">0 Pts</p>
+                            </div>
+
+                            <!-- Live Timer -->
+                            <div class="bg-slate-900 text-white px-3.5 py-2 rounded-xl flex items-center space-x-2">
+                                <i class="fa-solid fa-stopwatch text-amber-400 animate-pulse"></i>
+                                <span class="font-mono font-bold text-sm" id="quiz-timer">10:00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question Progress Bar -->
+                    <div class="mt-4">
+                        <div class="flex justify-between text-xs font-semibold text-slate-500 mb-1">
+                            <span>Soal Ke-<span id="quiz-current-num">1</span> dari <span id="quiz-total-num">10</span></span>
+                            <span id="quiz-percentage-text">10% Selesai</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                            <div id="quiz-progress-bar" class="bg-brand-500 h-full rounded-full transition-all duration-300" style="width: 10%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Quiz Card & Question Area -->
+                <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                    <!-- Question Category Badge & Text -->
+                    <div class="space-y-3">
+                        <span id="question-category-tag" class="inline-block bg-slate-100 text-slate-700 text-xs font-bold px-3 py-1 rounded-lg">
+                            <i class="fa-solid fa-volleyball mr-1 text-brand-600"></i> Permainan Bola Besar
+                        </span>
+                        <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 leading-snug" id="question-text">
+                            Loading pertanyaan...
+                        </h2>
+                    </div>
+
+                    <!-- Answer Options List -->
+                    <div class="space-y-3" id="options-container">
+                        <!-- Rendered dynamically -->
+                    </div>
+
+                    <!-- Instant Explanation Panel (Shown after answering) -->
+                    <div id="explanation-box" class="hidden p-4 rounded-xl border transition-all text-xs sm:text-sm space-y-1">
+                        <p class="font-bold flex items-center space-x-1.5" id="explanation-title">
+                            <!-- Dynamic title -->
+                        </p>
+                        <p id="explanation-text" class="text-slate-700 leading-relaxed">
+                            <!-- Dynamic explanation -->
+                        </p>
+                    </div>
+
+                    <!-- Action Controls -->
+                    <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+                        <span class="text-xs text-slate-400 font-medium"><i class="fa-solid fa-shield-halved"></i> Modus Evaluasi Interaktif</span>
+                        <button id="btn-next-question" onclick="nextQuestion()" disabled class="bg-brand-600 hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-2.5 rounded-xl font-bold text-sm transition shadow-sm flex items-center space-x-2">
+                            <span>Pertanyaan Berikutnya</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Result Summary Dashboard (Hidden by default) -->
+            <div id="quiz-summary-dashboard" class="hidden space-y-6">
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-md text-center space-y-6">
+                    <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mx-auto shadow-inner">
+                        <i class="fa-solid fa-trophy" id="summary-icon"></i>
+                    </div>
+
+                    <div class="space-y-1">
+                        <span class="text-xs font-bold uppercase text-slate-400 tracking-wider">Hasil Evaluasi PJOK</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900" id="summary-headline">Kerja Bagus, Calon Atlet! 🎉</h2>
+                        <p class="text-slate-500 text-xs sm:text-sm max-w-md mx-auto" id="summary-subtext">Kamu telah menyelesaikan seluruh soal evaluasi dengan performa luar biasa.</p>
+                    </div>
+
+                    <!-- Detailed Stat Grid -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto pt-2">
+                        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                            <p class="text-[10px] font-semibold text-slate-400">NILAI AKHIR</p>
+                            <p class="text-2xl font-black text-brand-600" id="summary-score-val">90</p>
+                        </div>
+                        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                            <p class="text-[10px] font-semibold text-slate-400">BENAR / SALAH</p>
+                            <p class="text-2xl font-black text-slate-800" id="summary-correct-val">9 / 10</p>
+                        </div>
+                        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                            <p class="text-[10px] font-semibold text-slate-400">WAKTU</p>
+                            <p class="text-2xl font-black text-blue-600" id="summary-time-val">04:15</p>
+                        </div>
+                        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                            <p class="text-[10px] font-semibold text-slate-400">XP DIPEROLEH</p>
+                            <p class="text-2xl font-black text-amber-500" id="summary-xp-val">+150 XP</p>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-wrap justify-center gap-3 pt-4">
+                        <button onclick="retryQuiz()" class="bg-slate-100 hover:bg-slate-200 text-slate-800 px-5 py-2.5 rounded-xl font-bold text-sm transition">
+                            <i class="fa-solid fa-rotate-right mr-1.5"></i> Ulangi Kuis
+                        </button>
+                        <button onclick="switchTab('dashboard')" class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-2.5 rounded-xl font-bold text-sm transition shadow-sm">
+                            <i class="fa-solid fa-chart-pie mr-1.5"></i> Lihat Dashboard Statistik
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 4: KALKULATOR BMI & KEBUGARAN ==================== -->
+        <section id="tab-kebugaran" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+                <div>
+                    <span class="bg-purple-100 text-purple-700 text-xs font-bold px-3 py-1 rounded-full">Fitur Praktis PJOK</span>
+                    <h2 class="text-2xl font-bold text-slate-900 mt-2">Kalkulator BMI & Indeks Kebugaran Jasmani Siswa</h2>
+                    <p class="text-xs text-slate-500">Hitung Indeks Massa Tubuh (BMI) dan dapatkan saran latihan fisik PJOK yang sesuai dengan kondisi tubuhmu.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Calculator Inputs -->
+                    <div class="space-y-4 bg-slate-50 p-5 rounded-xl border border-slate-200">
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-slate-700">Tinggi Badan (cm)</label>
+                            <input type="number" id="input-height" placeholder="Contoh: 155" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-sm font-semibold focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-slate-700">Berat Badan (kg)</label>
+                            <input type="number" id="input-weight" placeholder="Contoh: 48" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-sm font-semibold focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-slate-700">Jenis Kelamin</label>
+                            <select id="input-gender" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-sm font-semibold focus:ring-2 focus:ring-brand-500 outline-none">
+                                <option value="male">Laki-laki</option>
+                                <option value="female">Perempuan</option>
+                            </select>
+                        </div>
+
+                        <button onclick="calculateBMI()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition shadow-md flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-calculator"></i>
+                            <span>Hitung Kebugaran Tubuh</span>
+                        </button>
+                    </div>
+
+                    <!-- Results Output Card -->
+                    <div id="bmi-result-card" class="bg-slate-900 text-white p-6 rounded-xl space-y-4 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs text-slate-400 font-semibold uppercase">Hasil Analisis BMI</span>
+                            <div class="flex items-baseline space-x-3 mt-1">
+                                <span class="text-4xl font-black text-brand-400" id="bmi-val-display">--.-</span>
+                                <span class="text-sm font-bold bg-slate-800 px-3 py-1 rounded-full text-slate-300" id="bmi-status-display">Belum Diukur</span>
+                            </div>
+                            <p class="text-xs text-slate-300 mt-3 leading-relaxed" id="bmi-desc-display">
+                                Masukkan tinggi dan berat badanmu untuk melihat kategori status gizi dan saran latihan kebugaran jasmani.
+                            </p>
+                        </div>
+
+                        <div class="border-t border-slate-800 pt-4 space-y-2 text-xs">
+                            <p class="font-bold text-amber-400"><i class="fa-solid fa-person-running"></i> Rekomendasi Latihan Fisik PJOK:</p>
+                            <ul class="list-disc list-inside text-slate-300 space-y-1" id="bmi-recom-list">
+                                <li>Jogging ringan 20-30 menit (2-3 kali seminggu)</li>
+                                <li>Latihan daya tahan otot: Push-up & Sit-up</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Module Modal Reader -->
+    <div id="module-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <!-- Modal Header -->
+            <div class="p-5 border-b border-slate-200 flex justify-between items-start bg-slate-50">
+                <div class="space-y-1">
+                    <span id="modal-grade-badge" class="bg-brand-100 text-brand-700 text-xs font-bold px-2.5 py-0.5 rounded-full">Kelas 7 SMP</span>
+                    <h3 class="text-xl font-bold text-slate-900" id="modal-module-title">Judul Modul</h3>
+                </div>
+                <button onclick="closeModuleModal()" class="text-slate-400 hover:text-slate-700 p-1 rounded-lg">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content Body -->
+            <div class="p-6 overflow-y-auto space-y-6 custom-scrollbar flex-1 text-sm text-slate-700 leading-relaxed" id="modal-module-content">
+                <!-- Dynamic Content injected here -->
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 border-t border-slate-200 bg-slate-50 flex justify-between items-center">
+                <button onclick="closeModuleModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold rounded-xl text-xs transition">
+                    Tutup
+                </button>
+                <button id="modal-btn-start-quiz" onclick="" class="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-xs transition shadow-sm flex items-center space-x-1.5">
+                    <span>Uji Pemahaman di Evaluasi</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ================= DATA STORE FOR PJOK MODULES ================= */
+        const modulesData = [
+            {
+                id: "m7-1",
+                grade: "7",
+                category: "Bola Besar",
+                title: "Teknik Dasar Permainan Sepak Bola",
+                readTime: "8 Menit",
+                icon: "fa-soccer-ball",
+                bgGradient: "from-emerald-500 to-teal-600",
+                summary: "Pelajari gerak spesifik menendang, menghentikan, dan menggiring bola pada sepak bola kelas 7.",
+                content: `
+                    <h4 class="font-bold text-slate-900 text-base mb-2">1. Mengumpan & Menendang Bola (Passing & Shooting)</h4>
+                    <p class="mb-3">Menendang bola dapat dilakukan dengan beberapa bagian kaki:</p>
+                    <ul class="list-disc list-inside space-y-1 mb-4 pl-2">
+                        <li><b>Kaki Bagian Dalam:</b> Digunakan untuk umpan jarak pendek dengan akurasi tinggi.</li>
+                        <li><b>Kaki Bagian Luar:</b> Digunakan untuk mengumpan menyilang atau mengecoh lawan.</li>
+                        <li><b>Punggung Kaki (Kura-kura Kaki):</b> Digunakan untuk melakukan tembakan keras (shooting) ke gawang.</li>
+                    </ul>
+
+                    <h4 class="font-bold text-slate-900 text-base mb-2">2. Menghentikan Bola (Stopping/Controlling)</h4>
+                    <p class="mb-3">Teknik mengontrol laju bola agar berada dalam penguasaan tubuh. Bisa menggunakan telapak kaki, kaki bagian dalam, dada, atau paha tergantung arah datangnya bola.</p>
+
+                    <div class="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl my-4 text-xs">
+                        <p class="font-bold text-emerald-800 mb-1"><i class="fa-solid fa-circle-info"></i> Poin Penting Evaluasi:</p>
+                        <p class="text-slate-700">Posisi tumpuan kaki saat menendang dengan kaki dalam berada di samping bola dengan lutut sedikit ditekuk.</p>
+                    </div>
+                `
+            },
+            {
+                id: "m7-2",
+                grade: "7",
+                category: "Bola Besar",
+                title: "Bola Voli: Passing Bawah & Passing Atas",
+                readTime: "7 Menit",
+                icon: "fa-volleyball",
+                bgGradient: "from-blue-500 to-cyan-600",
+                summary: "Menguasai koordinasi tangan dan posisi badan untuk passing bawah dan atas dalam permainan bola voli.",
+                content: `
+                    <h4 class="font-bold text-slate-900 text-base mb-2">1. Passing Bawah</h4>
+                    <p class="mb-3">Passing bawah merupakan teknik utama untuk menerima servis atau smash lawan.</p>
+                    <ul class="list-disc list-inside space-y-1 mb-4 pl-2">
+                        <li>Rapatkan dan luruskan kedua lengan di depan badan hingga kedua ibu jari sejajar.</li>
+                        <li>Perkenaan bola ideal berada pada pergelangan tangan bagian atas.</li>
+                        <li>Ayunkan kedua lengan dari bawah ke atas tidak lebih dari 90 derajat.</li>
+                    </ul>
+
+                    <h4 class="font-bold text-slate-900 text-base mb-2">2. Passing Atas</h4>
+                    <p class="mb-3">Mengoper bola menggunakan jari-jari kedua tangan di atas jidat/kepala untuk menyusun serangan atau mengumpan ke smasher.</p>
+                `
+            },
+            {
+                id: "m7-3",
+                grade: "7",
+                category: "Kebugaran",
+                title: "Komponen Kebugaran Jasmani Dasar",
+                readTime: "6 Menit",
+                icon: "fa-heart-pulse",
+                bgGradient: "from-amber-500 to-orange-600",
+                summary: "Memahami unsur kebugaran seperti kekuatan, daya tahan, kelenturan, dan bentuk latihannya.",
+                content: `
+                    <h4 class="font-bold text-slate-900 text-base mb-2">Bentuk-Bentuk Latihan Kebugaran:</h4>
+                    <ul class="list-disc list-inside space-y-2 mb-4 pl-2">
+                        <li><b>Push-Up:</b> Melatih kekuatan otot dada, bahu, dan triset.</li>
+                        <li><b>Sit-Up:</b> Melatih kekuatan otot perut.</li>
+                        <li><b>Back-Up:</b> Melatih kekuatan otot punggung.</li>
+                        <li><b>Jogging / Lari Jauh:</b> Melatih daya tahan jantung dan paru-paru (Cardiorespiratory).</li>
+                    </ul>
+                `
+            },
+            {
+                id: "m8-1",
+                grade: "8",
+                category: "Bela Diri",
+                title: "Pencak Silat: Kuda-Kuda & Tangkisan",
+                readTime: "9 Menit",
+                icon: "fa-hand-fist",
+                bgGradient: "from-red-500 to-rose-600",
+                summary: "Variasi gerak spesifik kuda-kuda depan, samping, dan pola tangkisan dalam seni bela diri Indonesia.",
+                content: `
+                    <h4 class="font-bold text-slate-900 text-base mb-2">1. Sikap Kuda-Kuda</h4>
+                    <p class="mb-3">Posisi kaki menapak untuk memperkokoh posisi tubuh saat melakukan serangan atau bertahan.</p>
+                    <ul class="list-disc list-inside space-y-1 mb-4 pl-2">
+                        <li><b>Kuda-kuda Depan:</b> Kaki depan ditekuk, kaki belakang lurus, berat badan tumpu di kaki depan.</li>
+                        <li><b>Kuda-kuda Samping:</b> Satu kaki ditekuk ke samping, kaki lainnya lurus.</li>
+                    </ul>
+
+                    <h4 class="font-bold text-slate-900 text-base mb-2">2. Tangkisan Dalam & Luar</h4>
+                    <p class="mb-3">Gerak membendung serangan lawan menggunakan lengan dari luar ke dalam atau sebaliknya.</p>
+                `
+            },
+            {
+                id: "m8-2",
+                grade: "8",
+                category: "Senam",
+                title: "Senam Lantai: Guling Depan & Belakang",
+                readTime: "8 Menit",
+                icon: "fa-person-dots-from-line",
+                bgGradient: "from-purple-500 to-indigo-600",
+                summary: "Langkah-langkah aman melakukan Forward Roll dan Backward Roll di atas matras.",
+                content: `
+                    <h4 class="font-bold text-slate-900 text-base mb-2">1. Guling Depan (Forward Roll)</h4>
+                    <p class="mb-3">Sikap awal jongkok menghadap matras, letakkan telapak tangan, tempelkan dagu ke dada, lalu gulingkan badan dengan pundak menyentuh matras terlebih dahulu (bukan ubun-ubun kepala).</p>
+
+                    <div class="p-3 bg-rose-50 border border-rose-200 rounded-xl my-3 text-xs text-rose-800 font-medium">
+                        ⚠️ <b>Penting:</b> Pastikan dagu menempel rapat di dada saat berguling untuk melindungi leher dari cedera!
+                    </div>
+                `
+            },
+            {
+                id: "m9-1",
+                grade: "9",
+                category: "Atletik",
+                title: "Lari Sambung (Estafet) & Pergantian Tongkat",
+                readTime: "10 Menit",
+                icon: "fa-person-running",
+                bgGradient: "from-cyan-500 to-blue-600",
+                summary: "Teknik visual dan non-visual saat menyerahkan dan menerima tongkat estafet.",
+                content: `
+                    <h4 class="font-bold text-slate-900 text-base mb-2">Teknik Pergantian Tongkat Estafet:</h4>
+                    <ul class="list-disc list-inside space-y-2 mb-4 pl-2">
+                        <li><b>Cara Visual:</b> Penerima melihat ke belakang saat menerima tongkat (biasanya untuk nomor lari 4x400 meter).</li>
+                        <li><b>Cara Non-Visual:</b> Penerima tidak melihat ke belakang saat menerima tongkat (biasanya untuk nomor lari cepat 4x100 meter).</li>
+                    </ul>
+                `
+            },
+            {
+                id: "m9-2",
+                grade: "9",
+                category: "Kesehatan",
+                title: "Pertolongan Pertama Pada Kecelakaan (P3K)",
+                readTime: "7 Menit",
+                icon: "fa-kit-medical",
+                bgGradient: "from-emerald-600 to-green-700",
+                summary: "Penanganan awal luka ringan, kram otot, dan prinsip RICE saat cedera olahraga.",
+                content: `
+                    <h4 class="font-bold text-slate-900 text-base mb-2">Prinsip R.I.C.E saat Cedera Otot/Sprein:</h4>
+                    <ol class="list-decimal list-inside space-y-1 mb-4 pl-2">
+                        <li><b>Rest (Istirahat):</b> Hentikan aktivitas fisik segera.</li>
+                        <li><b>Ice (Es):</b> Kompres es pada area kram/cedera selama 15-20 menit.</li>
+                        <li><b>Compression (Penekanan):</b> Balut dengan perban elastis.</li>
+                        <li><b>Elevation (Peninggian):</b> Posisikan area terkeluh lebih tinggi dari jantung.</li>
+                    </ol>
+                `
+            }
+        ];
+
+        /* ================= DATA STORE FOR QUIZZES ================= */
+        const quizQuestions = {
+            "7": [
+                {
+                    q: "Bagian kaki yang paling tepat digunakan untuk mengumpan bola jarak pendek dengan tingkat akurasi tinggi pada permainan sepak bola adalah...",
+                    options: ["Punggung kaki", "Kaki bagian dalam", "Kaki bagian luar", "Tumit kaki"],
+                    answer: 1,
+                    cat: "Bola Besar",
+                    exp: "Kaki bagian dalam memiliki permukaan datar yang lebar sehingga ideal untuk umpan presisi jarak dekat."
+                },
+                {
+                    q: "Posisi perkenaan bola voli yang benar saat melakukan teknik Passing Bawah adalah pada...",
+                    options: ["Ujung jari-jari tangan", "Pergelangan tangan bagian atas", "Siku lengan", "Bahu"],
+                    answer: 1,
+                    cat: "Bola Besar",
+                    exp: "Bola ditenangkan dan diarahkan menggunakan pergelangan tangan bagian atas kedua lengan yang dirapatkan."
+                },
+                {
+                    q: "Bentuk latihan kebugaran jasmani yang bertujuan untuk melatih kekuatan otot perut adalah...",
+                    options: ["Push-Up", "Pull-Up", "Sit-Up", "Back-Up"],
+                    answer: 2,
+                    cat: "Kebugaran",
+                    exp: "Sit-up secara spesifik mengencangkan dan menguatkan otot abdomen (perut)."
+                },
+                {
+                    q: "Karakteristik utama pola makan sehat gizi seimbang yang sesuai dengan konsep 'Isi Piringku' adalah...",
+                    options: ["Porsi karbohidrat paling banyak tanpa sayur", "Komposisi seimbang karbohidrat, protein, sayuran, dan buah", "Hanya mengonsumsi protein hewani", "Minum es teh manis setiap makan"],
+                    answer: 1,
+                    cat: "Kesehatan",
+                    exp: "Isi Piringku mengutamakan gizi seimbang: 1/2 piring buah/sayur, dan 1/2 piring sisanya makanan pokok & lauk pauk."
+                },
+                {
+                    q: "Pada lari jarak pendek (sprint), aba-aba awal yang digunakan saat start jongkok secara berurutan adalah...",
+                    options: ["Siap - Bersedia - Ya", "Bersedia - Siap - Ya/Bunyi Tembakan", "Mulai - Siap - Ya", "Awas - Bersedia - Lari"],
+                    answer: 1,
+                    cat: "Atletik",
+                    exp: "Urutan resmi start jongkok adalah: 'Bersedia' (ambil posisi), 'Siap' (angkat pinggul), lalu 'Ya' / Bunyi Pistol."
+                }
+            ],
+            "8": [
+                {
+                    q: "Dalam pencak silat, posisi kaki menapak dengan ditekuk untuk memperkokoh posisi tubuh disebut...",
+                    options: ["Sikap Pasang", "Kuda-Kuda", "Elakan", "Tangkisan"],
+                    answer: 1,
+                    cat: "Bela Diri",
+                    exp: "Kuda-kuda adalah tumpuan dasar kaki untuk menjaga keseimbangan saat menyerang atau bertahan."
+                },
+                {
+                    q: "Bagian tubuh yang pertama kali menyentuh matras saat melakukan gerakan Guling Depan (Forward Roll) adalah...",
+                    options: ["Dahi / Muka", "Ubun-ubun kepala", "Tengkuk / Pundak", "Punggung bawah"],
+                    answer: 2,
+                    cat: "Senam",
+                    exp: "Tengkuk/pundak harus menyentuh matras lebih dahulu dengan dagu menempel di dada untuk keamanan leher."
+                },
+                {
+                    q: "Pada olahraga Tolak Peluru, teknik memegang peluru yang benar adalah ditempatkan pada...",
+                    options: ["Genggaman erat seluruh telapak tangan", "Pangkal jari-jari tangan di dekat leher di bawah telinga", "Ujung jari-jari tanpa menyentuh leher", "Atas telapak tangan terbuka"],
+                    answer: 1,
+                    cat: "Atletik",
+                    exp: "Peluru ditahan di pangkal jari-jari dan ditempelkan pada leher di bawah rahang."
+                }
+            ],
+            "9": [
+                {
+                    q: "Pada perlombaan lari estafet nomor 4 x 100 meter, teknik pergantian tongkat yang paling sering digunakan adalah...",
+                    options: ["Cara Visual", "Cara Non-Visual", "Cara Dilempar", "Cara Berhenti"],
+                    answer: 1,
+                    cat: "Atletik",
+                    exp: "Nomor 4x100m mengutamakan kecepatan maksimal sehingga penerima tidak melihat ke belakang (Non-Visual)."
+                },
+                {
+                    q: "Prinsip utama penanganan pertama pada cedera engkel terkilir (sprain) menggunakan metode R.I.C.E, di mana huruf 'I' bermakna...",
+                    options: ["Injection (Suntikan)", "Ice (Kompres Es)", "Immobilization", "Instruction"],
+                    answer: 1,
+                    cat: "Kesehatan",
+                    exp: "I = Ice (kompres es) untuk mengurangi pembengkakan dan meredakan rasa nyeri pada jaringan memar."
+                }
+            ]
+        };
+
+        /* ================= BADGES DATA ================= */
+        const badgesData = [
+            { id: "b1", title: "Pemula Bugar", icon: "fa-seedling", bg: "bg-emerald-100 text-emerald-600", unlocked: true },
+            { id: "b2", title: "Jago Bola Besar", icon: "fa-futbol", bg: "bg-blue-100 text-blue-600", unlocked: true },
+            { id: "b3", title: "Master Kuis", icon: "fa-award", bg: "bg-amber-100 text-amber-600", unlocked: true },
+            { id: "b4", title: "Pesilat Muda", icon: "fa-hand-fist", bg: "bg-rose-100 text-rose-600", unlocked: true },
+            { id: "b5", title: "Raja Sprint", icon: "fa-bolt", bg: "bg-purple-100 text-purple-600", unlocked: false },
+            { id: "b6", title: "Pahlawan P3K", icon: "fa-heart-circle-check", bg: "bg-teal-100 text-teal-600", unlocked: false }
+        ];
+
+        /* ================= STATE MANAGEMENT ================= */
+        let currentTab = 'dashboard';
+        let activeQuizState = {
+            grade: '7',
+            questions: [],
+            currentIndex: 0,
+            score: 0,
+            correctCount: 0,
+            timerInterval: null,
+            timeRemaining: 600, // 10 mins
+            answersHistory: []
+        };
+
+        /* ================= INIT ON LOAD ================= */
+        window.onload = function() {
+            renderBadges();
+            renderModules();
+            initCharts();
+        };
+
+        /* ================= TAB NAVIGATION LOGIC ================= */
+        function switchTab(tabId) {
+            currentTab = tabId;
+
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            // Show target tab
+            const target = document.getElementById(`tab-${tabId}`);
+            if(target) target.classList.remove('hidden');
+
+            // Update Nav styling desktop
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-brand-700', 'bg-brand-50', 'font-semibold');
+                btn.classList.add('text-slate-600', 'font-medium');
+            });
+
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if(activeBtn) {
+                activeBtn.classList.add('text-brand-700', 'bg-brand-50', 'font-semibold');
+                activeBtn.classList.remove('text-slate-600');
+            }
+
+            // Scroll top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* ================= MODULE RENDERING LOGIC ================= */
+        function renderModules() {
+            const gradeVal = document.getElementById('filter-grade').value;
+            const categoryVal = document.getElementById('filter-category').value;
+            const grid = document.getElementById('modules-grid');
+
+            let filtered = modulesData.filter(m => {
+                const matchGrade = (gradeVal === 'all' || m.grade === gradeVal);
+                const matchCategory = (categoryVal === 'all' || m.category === categoryVal);
+                return matchGrade && matchCategory;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full bg-white p-8 rounded-2xl text-center border border-slate-200">
+                        <i class="fa-solid fa-folder-open text-4xl text-slate-300 mb-2"></i>
+                        <p class="font-bold text-slate-700">Tidak ada modul yang cocok</p>
+                        <p class="text-xs text-slate-400">Coba atur ulang filter kelas atau kategori kamu.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(m => `
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition overflow-hidden flex flex-col justify-between">
+                    <div>
+                        <!-- Card Header Banner -->
+                        <div class="p-4 bg-gradient-to-r ${m.bgGradient} text-white flex justify-between items-center">
+                            <span class="bg-white/20 backdrop-blur-md text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full">
+                                Kelas ${m.grade} SMP
+                            </span>
+                            <span class="text-xs opacity-90 font-medium">
+                                <i class="fa-regular fa-clock mr-1"></i>${m.readTime}
+                            </span>
+                        </div>
+
+                        <!-- Card Content -->
+                        <div class="p-5 space-y-3">
+                            <div class="flex items-center space-x-2 text-xs font-bold text-brand-600">
+                                <i class="fa-solid ${m.icon}"></i>
+                                <span>${m.category}</span>
+                            </div>
+                            <h3 class="font-bold text-slate-900 text-base leading-snug">${m.title}</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed">${m.summary}</p>
+                        </div>
+                    </div>
+
+                    <div class="p-5 pt-0">
+                        <button onclick="openModuleModal('${m.id}')" class="w-full bg-slate-100 hover:bg-brand-50 hover:text-brand-700 text-slate-700 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-1.5">
+                            <i class="fa-solid fa-book-reader"></i>
+                            <span>Baca Modul Lengkap</span>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /* ================= MODULE MODAL LOGIC ================= */
+        function openModuleModal(moduleId) {
+            const module = modulesData.find(m => m.id === moduleId);
+            if (!module) return;
+
+            document.getElementById('modal-grade-badge').innerText = `Kelas ${module.grade} SMP - ${module.category}`;
+            document.getElementById('modal-module-title').innerText = module.title;
+            document.getElementById('modal-module-content').innerHTML = module.content;
+            
+            const btnQuiz = document.getElementById('modal-btn-start-quiz');
+            btnQuiz.onclick = function() {
+                closeModuleModal();
+                switchTab('kuis');
+                startQuiz(module.grade);
+            };
+
+            document.getElementById('module-modal').classList.remove('hidden');
+        }
+
+        function closeModuleModal() {
+            document.getElementById('module-modal').classList.add('hidden');
+        }
+
+        /* ================= QUIZ ENGINE LOGIC ================= */
+        function startQuiz(grade) {
+            const rawQuestions = quizQuestions[grade] || quizQuestions["7"];
+            
+            activeQuizState = {
+                grade: grade,
+                questions: [...rawQuestions],
+                currentIndex: 0,
+                score: 0,
+                correctCount: 0,
+                timerInterval: null,
+                timeRemaining: grade === '7' ? 600 : (grade === '8' ? 720 : 900),
+                answersHistory: []
+            };
+
+            // Switch UI screens
+            document.getElementById('quiz-selection-hub').classList.add('hidden');
+            document.getElementById('quiz-summary-dashboard').classList.add('hidden');
+            document.getElementById('quiz-runner').classList.remove('hidden');
+
+            document.getElementById('quiz-title-badge').innerText = `Evaluasi PJOK Kelas ${grade}`;
+            
+            // Start Timer
+            startQuizTimer();
+            renderCurrentQuestion();
+        }
+
+        function startQuizTimer() {
+            clearInterval(activeQuizState.timerInterval);
+            activeQuizState.timerInterval = setInterval(() => {
+                activeQuizState.timeRemaining--;
+                const mins = Math.floor(activeQuizState.timeRemaining / 60);
+                const secs = activeQuizState.timeRemaining % 60;
+                document.getElementById('quiz-timer').innerText = 
+                    `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+                if (activeQuizState.timeRemaining <= 0) {
+                    clearInterval(activeQuizState.timerInterval);
+                    finishQuiz();
+                }
+            }, 1000);
+        }
+
+        function renderCurrentQuestion() {
+            const q = activeQuizState.questions[activeQuizState.currentIndex];
+            const total = activeQuizState.questions.length;
+            const currentNum = activeQuizState.currentIndex + 1;
+
+            // Update Progress Header
+            document.getElementById('quiz-current-num').innerText = currentNum;
+            document.getElementById('quiz-total-num').innerText = total;
+            
+            const pct = Math.round((currentNum / total) * 100);
+            document.getElementById('quiz-progress-bar').style.width = `${pct}%`;
+            document.getElementById('quiz-percentage-text').innerText = `${pct}% Selesai`;
+
+            // Question text & category
+            document.getElementById('question-category-tag').innerHTML = `
+                <i class="fa-solid fa-layer-group text-brand-600 mr-1"></i> Topik: ${q.cat}
+            `;
+            document.getElementById('question-text').innerText = `${currentNum}. ${q.q}`;
+
+            // Reset explanation box & button
+            const expBox = document.getElementById('explanation-box');
+            expBox.classList.add('hidden');
+            document.getElementById('btn-next-question').disabled = true;
+
+            // Render Option Buttons
+            const optContainer = document.getElementById('options-container');
+            optContainer.innerHTML = q.options.map((opt, idx) => `
+                <button onclick="selectOption(${idx})" id="opt-btn-${idx}" class="opt-btn w-full text-left p-4 rounded-xl border border-slate-200 hover:border-brand-500 hover:bg-brand-50/50 transition font-medium text-slate-800 text-sm flex items-center justify-between group">
+                    <span class="flex items-center space-x-3">
+                        <span class="w-7 h-7 rounded-lg bg-slate-100 text-slate-600 group-hover:bg-brand-600 group-hover:text-white flex items-center justify-center font-bold text-xs shrink-0 transition">
+                            ${String.fromCharCode(65 + idx)}
+                        </span>
+                        <span>${opt}</span>
+                    </span>
+                    <i class="fa-regular fa-circle text-slate-300 opt-icon"></i>
+                </button>
+            `).join('');
+        }
+
+        function selectOption(selectedIndex) {
+            const q = activeQuizState.questions[activeQuizState.currentIndex];
+            const isCorrect = (selectedIndex === q.answer);
+
+            // Disable further selection
+            document.querySelectorAll('.opt-btn').forEach(btn => btn.disabled = true);
+
+            // Update Score
+            if (isCorrect) {
+                activeQuizState.score += 100 / activeQuizState.questions.length;
+                activeQuizState.correctCount++;
+                playSynthesizedAudio('correct');
+            } else {
+                playSynthesizedAudio('wrong');
+            }
+
+            // Update Live Score display
+            document.getElementById('live-quiz-score').innerText = `${Math.round(activeQuizState.score)} Pts`;
+
+            // Style Selected & Correct Buttons
+            const selectedBtn = document.getElementById(`opt-btn-${selectedIndex}`);
+            const correctBtn = document.getElementById(`opt-btn-${q.answer}`);
+
+            if (isCorrect) {
+                selectedBtn.classList.remove('border-slate-200');
+                selectedBtn.classList.add('border-emerald-500', 'bg-emerald-50', 'text-emerald-900');
+                selectedBtn.querySelector('.opt-icon').className = 'fa-solid fa-circle-check text-emerald-600 text-lg';
+            } else {
+                selectedBtn.classList.remove('border-slate-200');
+                selectedBtn.classList.add('border-rose-500', 'bg-rose-50', 'text-rose-900');
+                selectedBtn.querySelector('.opt-icon').className = 'fa-solid fa-circle-xmark text-rose-600 text-lg';
+
+                correctBtn.classList.remove('border-slate-200');
+                correctBtn.classList.add('border-emerald-500', 'bg-emerald-50');
+            }
+
+            // Show Explanation Box
+            const expBox = document.getElementById('explanation-box');
+            const expTitle = document.getElementById('explanation-title');
+            const expText = document.getElementById('explanation-text');
+
+            expBox.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-200', 'bg-rose-50', 'border-rose-200');
+            if (isCorrect) {
+                expBox.classList.add('bg-emerald-50', 'border-emerald-200');
+                expTitle.className = 'font-bold flex items-center space-x-1.5 text-emerald-800';
+                expTitle.innerHTML = '<i class="fa-solid fa-circle-check"></i> <span>Jawaban Benar!</span>';
+            } else {
+                expBox.classList.add('bg-rose-50', 'border-rose-200');
+                expTitle.className = 'font-bold flex items-center space-x-1.5 text-rose-800';
+                expTitle.innerHTML = '<i class="fa-solid fa-circle-info"></i> <span>Jawaban Kurang Tepat</span>';
+            }
+            expText.innerText = q.exp;
+
+            // Enable Next Button
+            document.getElementById('btn-next-question').disabled = false;
+        }
+
+        function nextQuestion() {
+            activeQuizState.currentIndex++;
+            if (activeQuizState.currentIndex < activeQuizState.questions.length) {
+                renderCurrentQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            clearInterval(activeQuizState.timerInterval);
+
+            const finalScore = Math.round(activeQuizState.score);
+            const totalQ = activeQuizState.questions.length;
+
+            document.getElementById('quiz-runner').classList.add('hidden');
+            document.getElementById('quiz-summary-dashboard').classList.remove('hidden');
+
+            document.getElementById('summary-score-val').innerText = finalScore;
+            document.getElementById('summary-correct-val').innerText = `${activeQuizState.correctCount} / ${totalQ}`;
+            document.getElementById('summary-xp-val').innerText = `+${finalScore * 2} XP`;
+
+            if (finalScore >= 80) {
+                document.getElementById('summary-headline').innerText = "Luar Biasa! Skor Sangat Baik 🏆";
+                document.getElementById('summary-subtext').innerText = "Pemahaman teori dan konsep PJOK kamu sudah sangat kuat!";
+            } else {
+                document.getElementById('summary-headline').innerText = "Usaha Bagus! Tetap Semangat 💪";
+                document.getElementById('summary-subtext').innerText = "Pelajari kembali modul belajar untuk meningkatkan skor evaluasimu.";
+            }
+        }
+
+        function quitQuiz() {
+            if (confirm("Apakah kamu yakin ingin keluar dari kuis ini? Progres tidak akan disimpan.")) {
+                clearInterval(activeQuizState.timerInterval);
+                document.getElementById('quiz-runner').classList.add('hidden');
+                document.getElementById('quiz-selection-hub').classList.remove('hidden');
+            }
+        }
+
+        function retryQuiz() {
+            startQuiz(activeQuizState.grade);
+        }
+
+        /* ================= AUDIO FEEDBACK (Web Audio API) ================= */
+        function playSynthesizedAudio(type) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === 'correct') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+                    osc.frequency.exponentialRampToValueAtTime(659.25, ctx.currentTime + 0.15); // E5
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                } else {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(220, ctx.currentTime); // A3
+                    osc.frequency.exponentialRampToValueAtTime(146.83, ctx.currentTime + 0.2); // D3
+                    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                }
+            } catch(e) {
+                // Audio Context fallback silent
+            }
+        }
+
+        /* ================= FITNESS / BMI CALCULATOR ================= */
+        function calculateBMI() {
+            const h = parseFloat(document.getElementById('input-height').value) / 100;
+            const w = parseFloat(document.getElementById('input-weight').value);
+
+            if (!h || !w || h <= 0 || w <= 0) {
+                alert("Mohon masukkan angka tinggi dan berat badan yang valid.");
+                return;
+            }
+
+            const bmi = (w / (h * h)).toFixed(1);
+            document.getElementById('bmi-val-display').innerText = bmi;
+
+            let status = "";
+            let statusBg = "";
+            let desc = "";
+            let recoms = [];
+
+            if (bmi < 18.5) {
+                status = "Berat Badan Kurang";
+                desc = "Tubuhmu membutuhkan asupan nutrisi gizi seimbang serta latihan pembentukan massa otot.";
+                recoms = [
+                    "Latihan kekuatan otot: Push-up, Sit-up, Squat",
+                    "Konsumsi protein cukup & gizi seimbang",
+                    "Istirahat teratur 8 jam per hari"
+                ];
+            } else if (bmi >= 18.5 && bmi <= 24.9) {
+                status = "Ideal / Bugar";
+                desc = "Kondisi tubuhmu sangat bugar dan ideal! Pertahankan pola hidup aktif dan konsumsi gizi seimbang.";
+                recoms = [
+                    "Olahraga teratur 3-4 kali seminggu (Sepak Bola, Voli, Basket)",
+                    "Menjaga daya tahan dengan jogging 30 menit",
+                    "Peregangan fleksibilitas secara rutin"
+                ];
+            } else {
+                status = "Berat Badan Lebih";
+                desc = "Disarankan untuk meningkatkan aktivitas kardio aerobik untuk menjaga kebugaran jantung dan paru.";
+                recoms = [
+                    "Aktivitas aerobik: Jalan cepat / Jogging 30-45 menit",
+                    "Kurangi jajanan tinggi gula dan minyak",
+                    "Latihan variasi permainan olahraga berdurasi sedang"
+                ];
+            }
+
+            document.getElementById('bmi-status-display').innerText = status;
+            document.getElementById('bmi-desc-display').innerText = desc;
+
+            const recomList = document.getElementById('bmi-recom-list');
+            recomList.innerHTML = recoms.map(r => `<li>${r}</li>`).join('');
+        }
+
+        /* ================= BADGES RENDER ================= */
+        function renderBadges() {
+            const container = document.getElementById('badges-container');
+            container.innerHTML = badgesData.map(b => `
+                <div class="p-3 rounded-xl border border-slate-200 flex flex-col items-center text-center space-y-1.5 ${b.unlocked ? 'bg-white' : 'bg-slate-50 opacity-50'}">
+                    <div class="w-10 h-10 rounded-full ${b.bg} flex items-center justify-center text-lg shadow-sm">
+                        <i class="fa-solid ${b.icon}"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-800 leading-tight">${b.title}</span>
+                    <span class="text-[10px] ${b.unlocked ? 'text-emerald-600 font-semibold' : 'text-slate-400'}">
+                        ${b.unlocked ? 'Terbuka' : 'Terkunci'}
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        /* ================= CHART.JS INITIALIZATION ================= */
+        function initCharts() {
+            const ctx = document.getElementById('masteryRadarChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Permainan Bola', 'Atletik', 'Bela Diri', 'Kebugaran Jasmani', 'Senam Lantai', 'Kesehatan & P3K'],
+                    datasets: [{
+                        label: 'Tingkat Penguasaan (%)',
+                        data: [90, 85, 75, 95, 80, 88],
+                        backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                        borderColor: '#22c55e',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#16a34a',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#16a34a'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#e2e8f0' },
+                            grid: { color: '#f1f5f9' },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
